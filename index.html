@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad Método JL - Video Bonus</title>
+    <style>
+        /* Estilos Generales y de Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 5; }
+
+        /* --- ESTILOS PARA FONDOS DINÁMICOS --- */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1; /* Detrás del contenido */
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: float-particle 20s infinite linear;
+        }
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        /* Círculo sutil para login y hero */
+        #login-screen::before, .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%23FFD700" opacity="0.1"><animate attributeName="r" values="1;30;1" dur="3s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* --- Pantalla de Login --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+            overflow: hidden; 
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative; 
+            z-index: 2;
+        }
+        .login-box h2 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        #login-subtitle {
+            margin-bottom: 25px;
+            color: #ccc;
+            height: 30px; 
+        }
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .password-input {
+            width: 100%;
+            padding: 15px 50px 15px 15px; 
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #555;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        .password-input:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+        #toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #888;
+            user-select: none;
+        }
+        .login-button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .login-button:hover { transform: scale(1.05); }
+        #login-error {
+            color: #ff4d4d;
+            margin-top: 15px;
+            height: 20px;
+            font-weight: 600;
+        }
+
+        /* --- Contenido Principal --- */
+        #main-content {
+            display: none;
+        }
+
+        /* Sección Hero */
+        .hero-section { background: linear-gradient(135deg, #000000 0%, #1a1a1a 70%, #2a2a2a 100%); position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 0; }
+        .hero-content { z-index: 2; position: relative; animation: fadeIn 1.5s ease-out; max-width: 900px; }
+        .main-headline { font-size: clamp(2.8rem, 6vw, 4.5rem); font-weight: 900; background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 4s ease-in-out infinite; margin-bottom: 1rem; line-height: 1.1; }
+        .sub-headline { font-size: clamp(1.3rem, 3.5vw, 2rem); color: #e0e0e0; margin-bottom: 1.5rem; font-weight: 300; height: 80px; display: flex; align-items: center; justify-content: center; }
+        .typewriter { display: inline-block; overflow: hidden; border-right: 3px solid #FFD700; white-space: nowrap; animation: blink-caret 0.75s step-end infinite; }
+        .hero-description { font-size: 1.2rem; color: #ccc; max-width: 700px; margin: 0 auto 30px; line-height: 1.6; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2); }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        
+        /* Flecha animada */
+        .bouncing-arrow {
+            margin: 40px auto 0;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bounce 2s infinite;
+        }
+        .bouncing-arrow svg {
+            width: 100%;
+            height: 100%;
+            fill: #FFD700;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* Sección de Comentarios */
+        .comments-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #333; padding: 100px 0; }
+        .section-title-dark { color: #000; font-size: clamp(2rem, 5vw, 3.5rem); text-align: center; margin-bottom: 1rem; }
+        .section-subtitle-dark { color: #555; font-size: 1.2rem; text-align: center; max-width: 700px; margin: 0 auto 60px; }
+        
+        #comments-list { margin-bottom: 60px; }
+        
+        #comment-form-container { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        #comment-form-container h3 {
+            font-size: 2rem; 
+            margin-bottom: 30px;
+            height: 40px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-input, .form-textarea { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 20px; font-size: 1rem; }
+        .form-input:focus, .form-textarea:focus { outline: none; border-color: #FFD700; }
+        .rating-group { margin-bottom: 20px; }
+        .rating-group .stars { display: inline-block; }
+        .rating-group .star { font-size: 2rem; color: #ccc; cursor: pointer; transition: color 0.2s; }
+        .rating-group .star:hover, .rating-group .star.selected { color: #FFD700; }
+        
+        /* MODIFICADO: Estilos del botón de comentario */
+        .submit-comment { 
+            padding: 15px 30px; 
+            background: linear-gradient(45deg, #FFD700, #FFA500); 
+            color: #000; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: transform 0.2s ease; 
+            animation: button-bounce 2s infinite ease-in-out; /* NUEVO: Animación de rebote */
+        }
+        .submit-comment:hover { 
+            transform: scale(1.1); /* Agrandar más en hover */
+            animation-play-state: paused; /* Pausar animación en hover */
+        }
+        @keyframes button-bounce { /* NUEVO: Keyframes para el rebote */
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Notificaciones de Comentarios */
+        #comment-notifications { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .comment-notification { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border-left: 4px solid #FFD700; 
+            border-radius: 12px; 
+            padding: 15px 20px; 
+            margin-bottom: 10px; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); 
+            color: #333; 
+            font-size: 14px; 
+            font-weight: 500; 
+            max-width: 320px; 
+            animation: slideInFromRight 0.5s ease-out; 
+            display: flex;
+            align-items: center;
+        }
+        .comment-notification.fade-out { animation: fadeOutToRight 0.5s ease-out forwards; }
+        .notification-icon { font-size: 1.5rem; margin-right: 12px; }
+        .notification-content .notification-author { font-weight: 700; color: #b8860b; display: block; margin-bottom: 3px; }
+        @keyframes slideInFromRight { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOutToRight { to { transform: translateX(110%); opacity: 0; } }
+
+        /* Estilos para Alertas de Validación */
+        #validation-alerts-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .validation-alert {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff4d4d, #ff6b6b);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+            animation: fadeInDown 0.4s ease-out, fadeOutUp 0.4s ease-in 3.5s forwards;
+            display: flex;
+            align-items: center;
+        }
+        .validation-alert::before {
+            content: '⚠️';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-30px); } }
+
+        /* Footer */
+        .site-footer { background: #0a0a0a; padding: 60px 0; color: #888; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; text-align: center; }
+        .footer-brand { flex-basis: 100%; margin-bottom: 30px; }
+        .footer-brand h3 { color: #fff; font-size: 2rem; margin-bottom: 5px; }
+        .footer-brand p { color: #FFD700; font-size: 1.2rem; letter-spacing: 1px; }
+        .footer-links { flex-basis: 100%; margin-bottom: 30px; }
+        .footer-links a { color: #888; text-decoration: none; margin: 0 15px; transition: color 0.2s; cursor: pointer; }
+        .footer-links a:hover { color: #FFD700; }
+        .footer-copyright { flex-basis: 100%; }
+
+        /* Estilos del Pop-Up Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+            visibility: hidden;
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #111111, #222222);
+            color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            line-height: 1;
+        }
+        .modal-close-btn:hover {
+            color: #FFD700;
+            transform: rotate(90deg);
+        }
+        .modal-title-text {
+            color: #FFD700;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .modal-body-text {
+            font-size: 1.1rem;
+            color: #cccccc;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        .modal-body-text p {
+            margin-bottom: 15px;
+        }
+        .modal-cta-button {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .modal-cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Animaciones y Utilidades */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: #FFD700; } }
+        .scroll-reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Login -->
+    <div id="login-screen">
+        <div class="particles"></div> 
+        <div class="login-box">
+            <h2>Acceso Exclusivo</h2>
+            <div id="login-subtitle">
+                 <span class="typewriter"></span>
+            </div>
+            <div class="password-wrapper">
+                <input type="password" id="password-input" class="password-input" placeholder="Palabra Secreta">
+                <span id="toggle-password">👁️</span>
+            </div>
+            <button id="login-button" class="login-button">ENTRAR</button>
+            <p id="login-error"></p>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main id="main-content">
+        <!-- Sección Hero con Video -->
+        <section class="hero-section">
+            <div class="particles"></div> 
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="main-headline">La Oferta que generó $</h1>
+                    <div class="sub-headline">
+                        <strong> <span id="typewriter-text" class="typewriter"></span> </strong>
+                    </div>
+                    <p class="hero-description scroll-reveal">
+                        Mi video favorito de OFERTAS IRRECHAZABLES… SOLO este video tiene un valor de 200$ pero hoy te lo entrego totalmente Gratis, no volverás a tener un mensaje sin estrategia.
+                    </p>
+                    <div class="video-container scroll-reveal" oncontextmenu="return false;">
+                        <iframe 
+                            src="https://drive.google.com/file/d/1dAk6tpy-W69cFi1K3fhStU3h5N7ppABR/preview?rm=minimal" 
+                            allow="autoplay;" 
+                            sandbox="allow-scripts allow-same-origin allow-presentation"
+                        >
+                        </iframe>
+                    </div>
+                    <div class="bouncing-arrow scroll-reveal">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 15.586l-4.293-4.293-1.414 1.414L12 18.414l5.707-5.707-1.414-1.414z"/><path d="M12 8.586l-4.293-4.293-1.414 1.414L12 11.414l5.707-5.707-1.414-1.414z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Comentarios -->
+        <section class="comments-section">
+            <div class="container">
+                <h2 class="section-title-dark scroll-reveal">¿Qué te pareció el video?</h2>
+                <p class="section-subtitle-dark scroll-reveal">Tu feedback es oro. Inspira a otros miembros de la comunidad compartiendo qué fue lo que más te impactó.</p>
+                <div id="comments-list" class="scroll-reveal"></div>
+                <div id="comment-form-container" class="scroll-reveal">
+                    <h3 class="section-title-dark">
+                        <span id="comment-title-typewriter" class="typewriter"></span>
+                    </h3>
+                    <form id="comment-form">
+                        <input type="text" id="author-name" class="form-input" placeholder="Tu Nombre">
+                        <textarea id="comment-text" class="form-textarea" rows="4" placeholder="Escribe tu comentario aquí..."></textarea>
+                        <div class="rating-group">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Tu Calificación:</label>
+                            <div class="stars">
+                                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+                            </div>
+                            <input type="hidden" id="rating-value" value="0">
+                        </div>
+                        <button type="submit" class="submit-comment">Publicar Comentario</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <h3>Jorge Leyva</h3>
+                        <p>Método JL</p>
+                    </div>
+                    <div class="footer-links"><a>Comunidad</a><a>Soporte</a><a>Términos</a></div>
+                    <div class="footer-copyright"><p>&copy; 2025 Método JL. Todos los derechos reservados.</p></div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Estructura del Pop-Up Modal -->
+    <div id="popup-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h3 id="modal-title" class="modal-title-text"></h3>
+            <div id="modal-body" class="modal-body-text"></div>
+            <a href="#" id="modal-cta" class="modal-cta-button" target="_blank" rel="noopener noreferrer">Más Información</a>
+        </div>
+    </div>
+
+    <!-- Contenedor para notificaciones de comentarios -->
+    <div id="comment-notifications"></div>
+    <!-- Contenedor para alertas de validación -->
+    <div id="validation-alerts-container"></div>
+
+
+    <script>
+        // --- Lógica de la Aplicación ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- INICIALIZAR EFECTOS DE FONDO ---
+            createParticles();
+            
+            setupLoginAndApp();
+
+            function setupLoginAndApp() {
+                // --- 1. LÓGICA DE LOGIN ---
+                const loginScreen = document.getElementById('login-screen');
+                const mainContent = document.getElementById('main-content');
+                const loginButton = document.getElementById('login-button');
+                const passwordInput = document.getElementById('password-input');
+                const loginError = document.getElementById('login-error');
+                const togglePassword = document.getElementById('toggle-password');
+                const SECRET_WORD = "METODOJL";
+                
+                const loginSubtitleEl = document.querySelector('#login-subtitle .typewriter');
+                const loginSubtitles = ["Acceso solo para miembros.", "Desbloquea el video bonus.", "Tu siguiente nivel espera."];
+                let loginSubtitleIndex = 0, loginCharIndex = 0, loginCurrentText = '', loginIsDeleting = false;
+
+                function typeLogin() {
+                    if (!loginSubtitleEl) return;
+                    const fullText = loginSubtitles[loginSubtitleIndex];
+                    if (loginIsDeleting) { loginCurrentText = fullText.substring(0, loginCharIndex-- - 1); } 
+                    else { loginCurrentText = fullText.substring(0, loginCharIndex++ + 1); }
+                    loginSubtitleEl.textContent = loginCurrentText;
+                    let typeSpeed = loginIsDeleting ? 50 : 100;
+                    if (!loginIsDeleting && loginCurrentText === fullText) { typeSpeed = 2000; loginIsDeleting = true; } 
+                    else if (loginIsDeleting && loginCurrentText === '') { loginIsDeleting = false; loginSubtitleIndex = (loginSubtitleIndex + 1) % loginSubtitles.length; typeSpeed = 500; }
+                    setTimeout(typeLogin, typeSpeed);
+                }
+                typeLogin();
+
+                togglePassword.addEventListener('click', () => {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    togglePassword.textContent = type === 'password' ? '👁️' : '🔐';
+                });
+
+                function attemptLogin() {
+                    if (passwordInput.value.toUpperCase() === SECRET_WORD) {
+                        loginScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loginScreen.style.display = 'none';
+                            mainContent.style.display = 'block';
+                            mainContent.style.animation = 'fadeIn 1s ease';
+                            initApp();
+                        }, 500);
+                    } else {
+                        loginError.textContent = 'Palabra secreta incorrecta.';
+                        passwordInput.style.borderColor = '#ff4d4d';
+                    }
+                }
+
+                loginButton.addEventListener('click', attemptLogin);
+                passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { attemptLogin(); } });
+            }
+            
+            function initApp() {
+                // --- MODIFICADO: Definición de sonido de notificación ---
+                const notificationSound = new Audio('sounds/notificacion.mp3');
+                notificationSound.preload = 'auto';
+
+                // --- 2. EFECTO TYPEWRITER (PRINCIPAL) ---
+                const typewriterElement = document.getElementById('typewriter-text');
+                const subtitles = ["El secreto para vender más.", "Estrategia probada, ROI masivo.", "El hack que estabas buscando."];
+                let subtitleIndex = 0, charIndex = 0, currentText = '', isDeleting = false;
+                
+                function type() {
+                    if (!typewriterElement) return;
+                    const fullText = subtitles[subtitleIndex];
+                    if (isDeleting) { currentText = fullText.substring(0, charIndex-- - 1); } 
+                    else { currentText = fullText.substring(0, charIndex++ + 1); }
+                    typewriterElement.textContent = currentText;
+                    let typeSpeed = isDeleting ? 75 : 150;
+                    if (!isDeleting && currentText === fullText) { typeSpeed = 2000; isDeleting = true; } 
+                    else if (isDeleting && currentText === '') { isDeleting = false; subtitleIndex = (subtitleIndex + 1) % subtitles.length; typeSpeed = 500; }
+                    setTimeout(type, typeSpeed);
+                }
+                type();
+
+                // --- EFECTO TYPEWRITER PARA TÍTULO DE COMENTARIOS ---
+                const commentTitleElement = document.getElementById('comment-title-typewriter');
+                const commentTitles = ["Tu opinión es oro", "Aquí tu comentario", "¡Inspíranos ahora!"];
+                let commentTitleIndex = 0, commentCharIndex = 0, commentCurrentText = '', commentIsDeleting = false;
+
+                function typeCommentTitle() {
+                    if (!commentTitleElement) return;
+                    const fullText = commentTitles[commentTitleIndex];
+                    if (commentIsDeleting) {
+                        commentCurrentText = fullText.substring(0, commentCharIndex-- - 1);
+                    } else {
+                        commentCurrentText = fullText.substring(0, commentCharIndex++ + 1);
+                    }
+                    commentTitleElement.textContent = commentCurrentText;
+                    let typeSpeed = commentIsDeleting ? 60 : 120;
+                    if (!commentIsDeleting && commentCurrentText === fullText) {
+                        typeSpeed = 2500;
+                        commentIsDeleting = true;
+                    } else if (commentIsDeleting && commentCurrentText === '') {
+                        commentIsDeleting = false;
+                        commentTitleIndex = (commentTitleIndex + 1) % commentTitles.length;
+                        typeSpeed = 500;
+                    }
+                    setTimeout(typeCommentTitle, typeSpeed);
+                }
+                typeCommentTitle();
+                
+                // --- 3. LÓGICA DE COMENTARIOS LOCAL Y NOTIFICACIONES (MODIFICADO) ---
+                const commentForm = document.getElementById('comment-form');
+                const stars = document.querySelectorAll('.rating-group .star');
+                const ratingValueInput = document.getElementById('rating-value');
+
+                commentForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const author = document.getElementById('author-name').value.trim();
+                    const text = document.getElementById('comment-text').value.trim();
+                    const rating = parseInt(ratingValueInput.value);
+
+                    if (!author) {
+                        showValidationAlert("¿Olvidaste tu nombre? ¡Queremos saber quién eres!");
+                        return;
+                    }
+                    if (!text) {
+                        showValidationAlert("Tu opinión es importante, ¡escribe un comentario!");
+                        return;
+                    }
+                    if (rating === 0) { 
+                        showValidationAlert("¡No olvides calificar el video con las estrellas!");
+                        return; 
+                    }
+
+                    createCommentNotification({ author, text });
+                    
+                    commentForm.reset();
+                    stars.forEach(s => s.classList.remove('selected'));
+                    ratingValueInput.value = '0';
+                });
+
+                function showValidationAlert(message) {
+                    const container = document.getElementById('validation-alerts-container');
+                    const alert = document.createElement('div');
+                    alert.className = 'validation-alert';
+                    alert.textContent = message;
+                    container.appendChild(alert);
+
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 4000);
+                }
+
+                function createCommentNotification(comment) {
+                    const container = document.getElementById('comment-notifications');
+                    const notification = document.createElement('div');
+                    notification.className = 'comment-notification';
+                    const textSnippet = comment.text.length > 50 ? comment.text.substring(0, 50) + '...' : comment.text;
+                    notification.innerHTML = `
+                        <span class="notification-icon">💬</span>
+                        <div class="notification-content">
+                            <span class="notification-author">${escapeHTML(comment.author)}</span>
+                            <span>comentó: "${escapeHTML(textSnippet)}"</span>
+                        </div>
+                    `;
+                    container.appendChild(notification);
+                    
+                    // NUEVO: Reproducir sonido para la notificación del comentario del usuario
+                    notificationSound.play().catch(error => {
+                        console.log("La reproducción de audio falló. Puede ser necesaria la interacción del usuario.", error);
+                    });
+
+                    setTimeout(() => {
+                        notification.classList.add('fade-out');
+                        setTimeout(() => notification.remove(), 500);
+                    }, 5000);
+                }
+                
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        const value = star.getAttribute('data-value');
+                        ratingValueInput.value = value;
+                        stars.forEach(s => s.classList.toggle('selected', s.getAttribute('data-value') <= value));
+                    });
+                });
+
+                // --- 4. ANIMACIONES DE SCROLL ---
+                const scrollElements = document.querySelectorAll('.scroll-reveal');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                scrollElements.forEach(el => observer.observe(el));
+
+                // --- 5. LÓGICA DE POP-UP MODALS ---
+                const modal = document.getElementById('popup-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalBody = document.getElementById('modal-body');
+                const modalCta = document.getElementById('modal-cta');
+                const closeModalBtn = document.querySelector('.modal-close-btn');
+                const footerLinks = document.querySelectorAll('.footer-links a');
+
+                const modalContent = {
+                    'Comunidad': {
+                        title: 'Únete a la Élite',
+                        body: `<p>Estás a un paso de acceder a nuestra comunidad privada. Un espacio exclusivo donde visionarios y emprendedores como tú colaboran, crean estrategias y escalan sus negocios.</p><p><strong>Dentro encontrarás:</strong> Networking de alto valor, sesiones de Q&A en vivo y contenido que no compartimos en ningún otro lugar.</p>`,
+                        ctaText: 'Acceder a la Comunidad',
+                        ctaLink: "#"
+                    },
+                    'Soporte': {
+                        title: 'Estamos para Ayudarte',
+                        body: `<p>¿Tienes alguna pregunta o necesitas asistencia técnica? Nuestro equipo de soporte está listo para resolver tus dudas y asegurar que tu experiencia sea impecable.</p><p>Tu éxito es nuestra prioridad. No dudes en contactarnos.</p>`,
+                        ctaText: 'Contactar a Soporte',
+                        ctaLink: "#"
+                    },
+                    'Términos': {
+                        title: 'Nuestros Compromisos',
+                        body: `<p>La transparencia es un pilar del Método JL. Aquí encontrarás los términos y condiciones que rigen nuestra relación, protegiendo tanto tus derechos como los nuestros.</p><p>Te invitamos a revisarlos para asegurar una colaboración clara y exitosa.</p>`,
+                        ctaText: 'Leer Términos Completos',
+                        ctaLink: "#"
+                    }
+                };
+
+                function openModal(type) {
+                    const content = modalContent[type];
+                    if (!content || !modal) return;
+
+                    modalTitle.textContent = content.title;
+                    modalBody.innerHTML = content.body;
+                    modalCta.textContent = content.ctaText;
+                    modalCta.href = content.ctaLink;
+
+                    modal.style.display = 'flex';
+                    setTimeout(() => {
+                        modal.classList.add('visible');
+                    }, 10);
+                }
+
+                function closeModal() {
+                    if (!modal) return;
+                    modal.classList.remove('visible');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 400); 
+                }
+
+                footerLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const type = e.target.textContent;
+                        if (modalContent[type]) {
+                            openModal(type);
+                        }
+                    });
+                });
+
+                closeModalBtn.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+
+                // --- 6. LÓGICA DE NOTIFICACIONES ETERNAS (MODIFICADO) ---
+                function startEternalNotifications() {
+                    const eternalNotificationContainer = document.getElementById('comment-notifications');
+                    // Se elimina la definición local del sonido, ahora usa la del scope de initApp()
+                    
+                    const names = ["Sofía", "Mateo", "Valentina", "Santiago", "Camila", "Sebastián", "Isabella", "Matías", "Valeria", "Alejandro", "Luciana", "Daniel", "Mariana", "Benjamín", "Gabriela", "Nicolás", "Daniela", "Diego", "Renata", "Leonardo", "Victoria", "Emiliano", "Ximena", "Joaquín", "Regina", "Adrián", "Fernanda", "Thiago", "Paula", "Andrés", "Antonia", "Felipe", "Julieta", "Manuel", "Martina", "Lucas", "Emilia", "David", "Sara", "Esteban", "Elena", "Juan", "Abril", "Miguel", "Agustina", "Ángel", "Catalina", "Javier", "Constanza", "Ricardo", "Josefina", "Carlos", "Amanda", "Francisco", "Carolina", "Luis", "Ana", "Jorge", "Isidora", "Pedro", "Florencia", "Eduardo", "Trinidad", "Ignacio", "Rafaela", "Arturo", "Laura", "Gustavo", "Paz", "Fernando", "Javiera"];
+                    const eternalNotificationsPool = [
+                        { author: "Comunidad", text: "deja tu comentario al final. ¡Es tu turno!", icon: "👇" },
+                        { author: "Jorge Leyva", text: "quiere saber qué parte te impactó más.", icon: "🔥" },
+                        { author: "{name}", text: "también dejó su comentario. ¡No te quedes fuera!", icon: "💬" },
+                        { author: "Recuerda", text: "¿Ya sabes qué vas a comentar? La comunidad espera.", icon: "🤔" },
+                        { author: "{name}", text: "acaba de calificar con 5 estrellas.", icon: "⭐" },
+                        { author: "Tu Feedback", text: "es oro. ¡Compártelo ahora!", icon: "💎" },
+                        { author: "{name}", text: "dice que este video le cambió el juego.", icon: "🚀" },
+                        { author: "Un Comentario", text: "puede inspirar a cientos de personas.", icon: "💡" },
+                        { author: "{name}", text: "acaba de unirse a la conversación.", icon: "👋" },
+                        { author: "No lo olvides", text: "tu opinión es la pieza que falta.", icon: "🧩" }
+                    ];
+
+                    function createAndShowNotification() {
+                        let templateObj = eternalNotificationsPool[Math.floor(Math.random() * eternalNotificationsPool.length)];
+                        const notificationData = { ...templateObj };
+
+                        if (notificationData.author.includes('{name}')) {
+                            const name = names[Math.floor(Math.random() * names.length)];
+                            notificationData.author = notificationData.author.replace('{name}', name);
+                        }
+                        if (notificationData.text.includes('{name}')) {
+                            const name = names[Math.floor(Math.random() * names.length)];
+                            notificationData.text = notificationData.text.replace('{name}', name);
+                        }
+
+                        const notification = document.createElement('div');
+                        notification.className = 'comment-notification';
+                        const icon = notificationData.icon || '💬';
+
+                        notification.innerHTML = `
+                            <span class="notification-icon">${icon}</span>
+                            <div class="notification-content">
+                                <span class="notification-author">${escapeHTML(notificationData.author)}</span>
+                                <span>${escapeHTML(notificationData.text)}</span>
+                            </div>
+                        `;
+                        eternalNotificationContainer.appendChild(notification);
+
+                        // Reproducir sonido para cada notificación
+                        notificationSound.play().catch(error => {
+                            console.log("La reproducción de audio falló. Puede ser necesaria la interacción del usuario.", error);
+                        });
+
+                        setTimeout(() => {
+                            notification.classList.add('fade-out');
+                            setTimeout(() => notification.remove(), 500);
+                        }, 7500);
+                    }
+
+                    // Primera notificación después de 30 segundos
+                    setTimeout(() => {
+                        createAndShowNotification();
+
+                        // Notificaciones posteriores cada 60 segundos
+                        setInterval(createAndShowNotification, 60000);
+                    }, 30000);
+                }
+
+                startEternalNotifications();
+            }
+        });
+
+        // --- FUNCIÓN PARA CREAR PARTÍCULAS ---
+        function createParticles() {
+            const particleContainers = document.querySelectorAll('.particles');
+            if (particleContainers.length === 0) return;
+
+            particleContainers.forEach(container => {
+                const particleCount = 25; // Número de partículas por contenedor
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                    particle.style.width = (Math.random() * 1 + 1) + 'px'; // Tamaños variados
+                    particle.style.height = particle.style.width;
+                    container.appendChild(particle);
+                }
+            });
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
